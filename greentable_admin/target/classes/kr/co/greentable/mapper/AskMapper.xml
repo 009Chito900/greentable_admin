@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.greentable.admin.ask">
+
+
+
+
+<!-- test_mybatis 조회 작업 : resultType 사용 (여러행 조회) -->
+	<select id="selectAllAsk" resultType="kr.co.greentable.admin.domain.SelectAskListDomain">
+		select ask_num, id, ask_category, ask_subject, to_char(ask_date, 'yyyy-mm-dd hh24:mi') ask_date, to_char(answer_date, 'yyyy-mm-dd hh24:mi') answer_date
+		from ask
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.greentable.member">
+
+	<!-- 
+		id 속성은 중복되지 않도록 설정한다. MyBatis Handler에서 찾아 실행 
+		namespace 속성:  자바에서 package와 같은 역할(동일한 id를 정의 했을 때 namespace를 다르게줘서 구분하여 사용) 
+		 #{ } : PreparedStatement bind 변수와 동일한 업무 수행
+	 -->
+	
+	<!-- member 조회작업 : resultType 사용 -->
+	<select id="selectMemberList" parameterType="RangeVO" resultType="kr.co.greentable.admin.domain.SelectMemberListDomain">
+		select id, name, email, to_char(join_date, 'yyyy-mm-dd hh24:mi') join_date
+		from member
+		where id = #{ id }
+	</select>
+
+	<!-- member 조회작업 : resultType 사용 -->
+	<select id="selectMemberDetailList" resultType="kr.co.greentable.admin.domain.SelectMemberDetailDomain">
+		select id, email, addr1, addr2, zipcode, phone, to_char(join_date, 'yyyy-mm-dd hh24:mi') join_date
+		from member
+	</select>
+	
+</mapper>

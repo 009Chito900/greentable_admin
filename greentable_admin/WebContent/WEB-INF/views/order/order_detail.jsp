@@ -1,3 +1,7 @@
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="kr.co.greentable.admin.domain.OptionDomain"%>
+<%@page import="java.util.List"%>
+<%@page import="kr.co.greentable.admin.domain.OrderDomain"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
 	info="판매관리"
@@ -103,6 +107,12 @@ li a:hover {
 	margin:0px, auto;
 	
 	}
+	
+	#delBtnWrap{
+	text-align:right;
+	margin-bottom: 30px;
+	}
+	
 /* 내가 추가  */
 
 </style>
@@ -119,8 +129,20 @@ li a:hover {
 <!-- DatePicker -->
 
 <script type="text/javascript">
+$(function(){
+
+$("#delBtn").click(function(){
+	if(confirm("글을 삭제하시겠습니까")){
+		
+	  $("#frm").submit();
+	}///end if
+
+	
+});//click
+
 
 });//ready
+
 </script>
 
 </head>
@@ -144,14 +166,77 @@ li a:hover {
 			</ul> 
 
 <div id="datePickerWrap">
+</div>
+<form id="frm" action="order_delete.do">
+<div  id="delBtnWrap" >	
 
-	<input type="text" id="orderDate" name="orderDate" style="width:150px"/>
-	<button type="button" class="btn btn-light">  판매상품 보기</button>
-	</div>
-	
+
+
+	<input type="button" id="delBtn" value="환불/구매취소"  class="btn btn-success"/>
+ 	<input type="hidden"  name="chosen_order_num" value="${param.order_num}"/>
+ 	<input type="hidden"  name="orderDate" value="${param.orderDate}"/>
+</div>	
+
+</form>	
+
 	<div id="tableWrap">
 		<table class="table table-bordered">
-  <thead>
+		 <c:if test="${empty list_order}">
+  <tr>
+  <td colspan="5">입력된 데이터가 존재하지 않습니다.</td>
+  </tr>
+  </c:if>
+  
+
+     <tr>
+      <th scope="col">구매번호</th>
+      <th scope="col">아이디</th>
+      <th scope="col">이름</th>
+      <th scope="col">상품명</th>
+      <th scope="col">판매옵션</th>
+      <th scope="col">가격</th>
+      <th scope="col">수량</th>
+      <th scope="col">총구매액(원)</th>
+    </tr>
+    
+    <% 
+    DecimalFormat formatter=new DecimalFormat("###,###");
+    List<OrderDomain> orederList=( List<OrderDomain>)request.getAttribute("list_order");
+    List<OptionDomain> optionList=( List<OptionDomain>)request.getAttribute("list_option");
+    
+    OrderDomain od=null;
+    OptionDomain optD=null;
+   	for( int i=0 ;i <orederList.size();i++){
+   		od=orederList.get(i);
+   	
+   		%>
+   		
+   		<tr>
+		<td><%=od.getOrder_num()%></td>
+   		<td><%= od.getId() %></td>
+   		<td><%= od.getName() %></td>
+   		<td><%= od.getProduct_name() %></td>
+   		<%
+
+   			 optD=optionList.get(i);
+   			 %>
+   			 <td><%= optD.getOption_name() %></td>
+   			 <td><%= formatter.format(optD.getOption_price())%></td>
+   			 <td><%= optD.getQuantity() %></td>
+   			 <td><%= formatter.format(optD.getOption_price()*optD.getQuantity())%></td>
+   			 
+   			 <%
+   		 //}
+   		%>
+   		</tr>
+   		<%
+    	
+    }
+    %>
+    </table>
+    
+  <table class="table table-bordered">
+
     <tr>
       <th scope="col">수신인</th>
       <th scope="col">연락처</th>
@@ -160,27 +245,23 @@ li a:hover {
       <th scope="col">우편번호</th>
      
     </tr>
-  </thead>
-  <tbody>
-  <c:if test="${empty list_order}">
-  <tr>
-  <td colspan="5">입력된 데이터가 존재하지 않습니다."</td>
-  </tr>
-  </c:if>
+
+
+
   
-  <c:forEach var="rc"  items="${receiver_detail }">
     <tr>
-      <td> <c:out value="${rc.receiver_name }"/> </td>
-      <td> <c:out value="${rc.receiver_phone}"/> </td>
-      <td> <c:out value="${rc.receiver_addr1}"/> </td>
-      <td> <c:out value="${rc.receiver_addr2}"/> </td>
-      <td> <c:out value="${rc.receiver_zipcode}"/> </td>
+      <td> <c:out value="${receiver_detail.receiver_name }"/> </td>
+      <td> <c:out value="${receiver_detail.receiver_phone}"/> </td>
+      <td> <c:out value="${receiver_detail.receiver_addr1}"/> </td>
+      <td> <c:out value="${receiver_detail.receiver_addr2}"/> </td>
+      <td> <c:out value="${receiver_detail.receiver_zipcode}"/> </td>
     </tr>
-   </c:forEach> 
-    </tbody>
-    
+
+
+
     </table>
 		</div>
+	
 </div>
 </div>		
 		

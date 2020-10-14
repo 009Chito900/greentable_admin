@@ -17,33 +17,53 @@ import java.io.IOException;
 @Controller
 public class OrderController {
 
-	@RequestMapping(value="/admin/order.do", method=GET)
-	public String orderList(String orderDate, Model model) {
-		
-		//서비스 객체로 값 할당
-		OrderService ors=new OrderService();
+	@RequestMapping(value="/order.do", method=GET)
+	public String orderMain() {
 	
-		
-		//view 페이지에서 보여줄 데이터
-	model.addAttribute("list_order",ors.searchOrderList(orderDate));
-	model.addAttribute("list_option",ors.searchOptionList(orderDate));
-		
-		return "order/order";
+		return "order/order_main";
 	}
 	
-	@RequestMapping(value="/admin/order_detail.do", method=GET)
-	public String orderDetailList(String order_num, Model model) {
+	@RequestMapping(value="/order_pocess.do", method=GET)
+	public String orderList(String orderDate, Model model) {
 		
-		//서비스 객체로 값 할당
 		OrderService ors=new OrderService();
 		
 		
-		//view 페이지에서 보여줄 데이터
+		model.addAttribute("list_order",ors.searchOrderList(orderDate));
+		model.addAttribute("list_option",ors.searchOptionList(orderDate));
+		model.addAttribute("orderDate",orderDate );
+		
+		return "order/order_process";
+	}
+	
+	@RequestMapping(value="/order_detail.do", method=GET)
+	public String orderDetailList(String order_num, Model model) {
+		
+		OrderService ors=new OrderService();
+		
+		model.addAttribute("list_order",ors.searchOrderDetailList(order_num));
+		model.addAttribute("list_option",ors.searchOptionDetailList(order_num));
+		
 		model.addAttribute("receiver_detail",ors.searchReceiver(order_num));
 		
 		return "order/order_detail";
 	}
 	
+	
+	@RequestMapping(value="/order_delete.do", method=GET)
+	public String removeOrderNum(String orderDate, String chosen_order_num, Model model) {
+		
+		OrderService ors=new OrderService();
+		
+		boolean flag=ors.removeOrderNum(chosen_order_num);
+		
+		model.addAttribute("orderDate",orderDate);
+		model.addAttribute("delFlag",flag);
+		model.addAttribute("move_page","del");
+		
+		return "forward:order.do";
+	}
+
 	
 	@ExceptionHandler(IOException.class)
 	public ModelAndView uploadErr(IOException ie) {

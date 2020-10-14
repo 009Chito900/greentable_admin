@@ -2,15 +2,14 @@ package kr.co.greentable.admin.domain;
 
 public class ReceiverDomain {
 
-	String order_date, receiver_name, receiver_phone, receiver_addr1, receiver_addr2, receiver_zipcode;
+	String /* order_date, */ receiver_name, receiver_phone, receiver_addr1, receiver_addr2, receiver_zipcode;
 
-	public String getOrder_date() {
-		return order_date;
-	}
-
-	public void setOrder_date(String order_date) {
-		this.order_date = order_date;
-	}
+	/*
+	 * public String getOrder_date() { return order_date; }
+	 * 
+	 * public void setOrder_date(String order_date) { this.order_date = order_date;
+	 * }
+	 */
 
 	public String getReceiver_name() {
 		return receiver_name;
@@ -50,6 +49,13 @@ public class ReceiverDomain {
 
 	public void setReceiver_zipcode(String receiver_zipcode) {
 		this.receiver_zipcode = receiver_zipcode;
+	}
+
+	@Override
+	public String toString() {
+		return "ReceiverDomain [receiver_name=" + receiver_name + ", receiver_phone=" + receiver_phone
+				+ ", receiver_addr1=" + receiver_addr1 + ", receiver_addr2=" + receiver_addr2 + ", receiver_zipcode="
+				+ receiver_zipcode + "]";
 	}
 
 }

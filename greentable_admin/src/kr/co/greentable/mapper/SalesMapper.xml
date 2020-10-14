@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="salesmapper">
+<!--전체 매출 조회 갯수   -->
+<select id="allSalesCnt" parameterType="String" resultType="int">
+select count(*)cnt from
+(select mc.main_ctg_name,pro.product_name, option_name, option_price, quantity,(option_price*quantity) total_price
+from main_category mc, sub_category sc, product pro, product_option po,order_list ol, total_order tto
+where sc.main_ctg_name=mc.main_ctg_name and pro.sub_ctg_name=sc.sub_ctg_name and po.product_num=pro.product_num
+and ol.option_num=po.option_num and ol.product_num=pro.product_num and ol.order_num=tto.order_num
+and order_date=#{order_date}
+order by mc.main_ctg_name )
+</select>
+
+<select id="sales" resultType="kr.co.greentable.admin.domain.SalesDomain" parameterType="kr.co.greentable.admin.vo.SalesRangeVO">
+select main_ctg_name,product_name, option_name, option_price, quantity,(option_price*quantity) total_price
+from(select rownum r, main_ctg_name,product_name, option_name, option_price, quantity,(option_price*quantity) total_price
+from(select mc.main_ctg_name,pro.product_name, option_name, option_price, quantity,(option_price*quantity) total_price
+from main_category mc, sub_category sc, product pro, product_option po,order_list ol, total_order tto
+where sc.main_ctg_name=mc.main_ctg_name and pro.sub_ctg_name=sc.sub_ctg_name and po.product_num=pro.product_num
+and ol.option_num=po.option_num and ol.product_num=pro.product_num and ol.order_num=tto.order_num
+and order_date=#{order_date}
+order by mc.main_ctg_name ))
+where r between #{startNum} and #{endNum}
+</select>
+
+<select id="salesGraph" resultType="kr.co.greentable.admin.domain.SalesGraphDomain" parameterType="String">
+select mc.main_ctg_name,pro.product_name, option_name, option_price, quantity,(option_price*quantity) total_price
+from main_category mc, sub_category sc, product pro, product_option po,order_list ol, total_order tto
+where sc.main_ctg_name=mc.main_ctg_name and pro.sub_ctg_name=sc.sub_ctg_name and po.product_num=pro.product_num
+and ol.option_num=po.option_num and ol.product_num=pro.product_num and ol.order_num=tto.order_num
+and order_date=#{order_date}
+order by mc.main_ctg_name 
+
+
+</select>
+
+</mapper>

@@ -1,95 +1,119 @@
 package kr.co.greentable.admin.service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import kr.co.greentable.admin.dao.AdminAskDAO;
+import kr.co.greentable.admin.domain.SelectAskDetailDomain;
 import kr.co.greentable.admin.domain.SelectAskListDomain;
-import kr.co.greentable.admin.vo.AddAnswerVO;
 import kr.co.greentable.admin.vo.AskRangeVO;
+import kr.co.greentable.admin.vo.UpdateAnswerVO;
 
 public class AdminAskService {
+	
 	/**
-	 * °Ô½ÃÆÇÀÇ Ã¹¹øÂ° ¹øÈ£¿Í ³¡¹øÈ£¸¦ ¹Ş¾Æ¼­ °Ô½ÃÆÇÀÇ ¸®½ºÆ®¸¦ Á¶È¸ÇÏ´Â ÀÏ.
-	 * 
-	 * @param arVO
+	 * ì „ì²´ ë¬¸ì˜ê¸€ì˜ ìˆ˜ : DBì‚¬ìš©
+	 * @return totalCnt : ì „ì²´ ë¬¸ì˜ê¸€ ìˆ˜ 
+	 */
+	public int totalCount() {
+		int totalCnt=0;
+		
+		AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
+		totalCnt=adaskDAO.selectAskCnt();
+		
+		return totalCnt;
+	}//totalCount
+	
+	/**
+	 * í•œ í™”ë©´ì— ë³´ì—¬ì¤„ ê²Œì‹œë¬¼ì˜ ìˆ˜. 10ê±´
 	 * @return
 	 */
-	public List<SelectAskListDomain> searchAskList(AskRangeVO arVO) {
+	public int pageScale() {
+		int pageScale=10;
+		
+		return pageScale;
+	}//pageScale
+	
+	/**
+	 * ì´ í˜ì´ì§€ìˆ˜ 
+	 * @param totalCount
+	 * @param pageScale
+	 * @return
+	 */
+	public int totalPage( int totalCount, int pageScale) {
+		
+		int totalPage=(int)Math.ceil( (double)totalCount /pageScale);
+		
+		return totalPage;
+	}//totalPage
+	
+	/**
+	 * ì‹œì‘ë²ˆí˜¸. 
+	 * @return
+	 */
+	public int startNum( int currentPage, int pageScale ) {
+		int startNum= currentPage*pageScale-pageScale+1 ;
+		return startNum;
+	}//startNum
+	
+	/**
+	 *  ë ë²ˆí˜¸. 
+	 * @return
+	 */
+	public int  endNum( int startNum, int pageScale ) {
+		int endNum=startNum+pageScale-1;
+		return endNum;
+	}//endNum
+	
+	/**
+	 * ì „ì²´ ë¬¸ì˜ê¸€ ì¡°íšŒ
+	 * 
+	 * @param arVO : startNum, endNum
+	 * @return
+	 */
+	public List<SelectAskListDomain> searchAskList( AskRangeVO arVO ) {
+		//DAO
+		AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
+		
+	
 		List<SelectAskListDomain> list = null;
 		
-		//DAO»ç¿ë
-		AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
-		list=adaskDAO.selectAskList(arVO);
+		list=adaskDAO.selectAskList( arVO );
 
 		return list;
 	}// searchAskList
 
 	/**
-	 * ±Û¹øÈ£¸¦ ¹Ş¾Æ¼­ DB¿¡¼­ ¹®ÀÇ±Û »ó¼¼³»¿ëÀ» Á¶È¸ ÇÏ´Â ÀÏ
+	 * ask_numì„ ë°›ì•„ì„œ ë¬¸ì˜ê¸€ ìƒì„¸ ë‚´ìš©ì„ ì¡°íšŒí•˜ëŠ” ì¼.
 	 * 
-	 * @param ambVO
-	 * @return
+	 * @param ask_num ë¬¸ì˜ê¸€ ë²ˆí˜¸
+	 * @return ë¬¸ì˜ê¸€ ìƒì„¸ ë‚´ìš©
 	 */
-	/*
-	 * public selectAskDetailDomain searchAskDetail( String askNum ) {
-	 * selectAskDetailDomain sadDomain=new selectAskDetailDomain();
-	 * 
-	 * int cnt=0;
-	 * 
-	 * Calendar cal=Calendar.getInstance(); int nowYear=cal.get(Calendar.YEAR);
-	 * 
-	 * //³ªÀÌ¿¡´Â ÅÂ¾î³­ ÇØ°¡ ÀÔ·ÂµÇ¾î ÀÖ±â ¶§¹®¿¡, ³ªÀÌ·Î ¿¬»êÇÏ¿© Àç¼³Á¤ÇÑ´Ù.
-	 * ambVO.setAge(nowYear-ambVO.getAge() +1 ); //DAO»ç¿ë : MyBatis ExamMyBatisDAO
-	 * embDAO=ExamMyBatisDAO.getInstance(); try {
-	 * cnt=embDAO.insertTestMyBatis(ambVO); } catch (SQLException e) {
-	 * e.printStackTrace(); }
-	 * 
-	 * 
-	 * return sadDomain; }//searchAskDetail
-	 * 
-	 *//**
-		 * Ãß°¡/¼öÁ¤/»èÁ¦ÇÑ ¹®ÀÇ±Û ´äº¯À» DB¿¡ updateÇÏ´Â ÀÏ.
-		 * 
-		 * @param ambVO
-		 * @return
-		 */
-	/*
-	 * public int addAnswer( AddAnswerVO adaVO ) { int cnt=0;
-	 * 
-	 * int cnt=0;
-	 * 
-	 * Calendar cal=Calendar.getInstance(); int nowYear=cal.get(Calendar.YEAR);
-	 * 
-	 * //³ªÀÌ¿¡´Â ÅÂ¾î³­ ÇØ°¡ ÀÔ·ÂµÇ¾î ÀÖ±â ¶§¹®¿¡, ³ªÀÌ·Î ¿¬»êÇÏ¿© Àç¼³Á¤ÇÑ´Ù.
-	 * ambVO.setAge(nowYear-ambVO.getAge() +1 ); //DAO»ç¿ë : MyBatis ExamMyBatisDAO
-	 * embDAO=ExamMyBatisDAO.getInstance(); try {
-	 * cnt=embDAO.insertTestMyBatis(ambVO); } catch (SQLException e) {
-	 * e.printStackTrace(); }
-	 * 
-	 * 
-	 * return cnt; }//addAnswer
-	 * 
-	 *//**
-		 * ¹®ÀÇ±ÛÀ» DB¿¡ deleteÇÏ´Â ÀÏ.
-		 * 
-		 * @param ambVO
-		 * @return
-		 *//*
-			 * public int removeAsk( String askNum ) { int cnt=0;
-			 * 
-			 * int cnt=0;
-			 * 
-			 * Calendar cal=Calendar.getInstance(); int nowYear=cal.get(Calendar.YEAR);
-			 * 
-			 * //³ªÀÌ¿¡´Â ÅÂ¾î³­ ÇØ°¡ ÀÔ·ÂµÇ¾î ÀÖ±â ¶§¹®¿¡, ³ªÀÌ·Î ¿¬»êÇÏ¿© Àç¼³Á¤ÇÑ´Ù.
-			 * ambVO.setAge(nowYear-ambVO.getAge() +1 ); //DAO»ç¿ë : MyBatis ExamMyBatisDAO
-			 * embDAO=ExamMyBatisDAO.getInstance(); try {
-			 * cnt=embDAO.insertTestMyBatis(ambVO); } catch (SQLException e) {
-			 * e.printStackTrace(); }
-			 * 
-			 * 
-			 * return cnt; }//removeAsk
-			 */
+	 public SelectAskDetailDomain searchAskDetail( String ask_num ) {
+		 AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
+		 
+		 SelectAskDetailDomain sadd=null;
+		 sadd=adaskDAO.selectAskDetail(ask_num);
+		 
+		 return sadd;
+	 }//searchAskDetail
+		 
+
+	 public int updateAnswer( UpdateAnswerVO uaVO ) { 
+		 AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
+		 
+		 int cnt=0;
+		 cnt=adaskDAO.updateAnswer(uaVO);
+	
+		 return cnt; 
+	 }//updateAnswer
+	 
+	 public int removeAsk( String ask_num ) {
+		 AdminAskDAO adaskDAO=AdminAskDAO.getInstance();
+		 
+		 int cnt=0;
+		 cnt=adaskDAO.removeAsk(ask_num);
+	
+		 return cnt; 
+	 }//removeAsk
+	 
 }// class

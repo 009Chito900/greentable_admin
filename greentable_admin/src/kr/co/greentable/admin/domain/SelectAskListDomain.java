@@ -1,7 +1,7 @@
 package kr.co.greentable.admin.domain;
 
 public class SelectAskListDomain {
-	String ask_num, id, ask_category, ask_subject, ask_date, answer_date; //chkAnswer가 컬럼에 없음. 왜 없는? 
+	String ask_num, id, ask_category, ask_subject, ask_date, answer_date; //chkAnswer가 컬럼에 없음. 
 
 	public String getAsk_num() {
 		return ask_num;

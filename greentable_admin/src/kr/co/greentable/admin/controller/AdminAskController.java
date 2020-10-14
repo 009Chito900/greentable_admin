@@ -3,77 +3,127 @@ package kr.co.greentable.admin.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import kr.co.greentable.admin.domain.SelectAskDetailDomain;
+import kr.co.greentable.admin.domain.SelectAskListDomain;
 import kr.co.greentable.admin.service.AdminAskService;
-import kr.co.greentable.admin.vo.AddAnswerVO;
 import kr.co.greentable.admin.vo.AskRangeVO;
+import kr.co.greentable.admin.vo.UpdateAnswerVO;
 
 @Controller
 public class AdminAskController {
 	/**
-	 * ¹®ÀÇ±ÛÀÇ ³»¿ëÀ» Á¶È¸ÇÏ¿©, ¸®½ºÆ®·Î adAskList.jsp¿¡ »Ñ·ÁÁÖ´Â ÀÏ.
-	 * @param currentPage : ÇöÀç ÆäÀÌÁö model : °Ô½Ã±ÛÀÇ ³»¿ë
+	 * ì „ì²´ ë¬¸ì˜ê¸€ì„ ì¡°íšŒí•˜ëŠ” ì¼  
+	 * @param currentPage : í˜„ì¬ í˜ì´ì§€ model : ì „ì²´ ë¬¸ì˜ê¸€
 	 * @return 
 	 */
-	@RequestMapping(value="/admin/askList.do", method = GET)
-	public String askList( String currentPage, Model model ) {
-			
-			AskRangeVO arVO=null;
-			arVO.setStartNum(1);
-			arVO.setEndNum(10); //ÀÓÀÇ·Î ±¸°£ ¼³Á¤
+	@RequestMapping(value="/ask/askList.do", method = GET)
+	public String askList( String paramPage, HttpSession session, Model model ) {
 		
-			if( currentPage == null ) {
-				currentPage="1";
+			String url="ask/adAskList";
+			//ë¡œê·¸ì¸ ì²´í¬ 
+			String id=(String)session.getAttribute("user_id");
+			
+			if(id == null) {
+				url="redirect:/admin/loginForm.do"; //
+			}
+		
+			//Service
+			AdminAskService aas=new AdminAskService();
+			//ì „ì²´ ë¬¸ì˜ê¸€ ìˆ˜ 
+			int totalCount=aas.totalCount();
+			//í•œ í™”ë©´ì— ë³´ì—¬ì¤„ ê²Œì‹œë¬¼ì˜ ìˆ˜ 
+			int pageScale=aas.pageScale();
+			//ì´ í˜ì´ì§€ ìˆ˜
+			int totalPage=aas.totalPage(totalCount, pageScale);
+			//xxxControllerëŠ” web parameter ì²˜ë¦¬( ìœ íš¨ì„±ê²€ì¦ , íŒŒë¼ë©”í„° ê´€ë ¨ì²˜ë¦¬)
+			if( paramPage == null){
+				paramPage="1";
 			}//end if
 			
-			//¼­ºñ½º¸¦ »ı¼ºÇÏ°í ¾÷¹«Ã³¸® °á°ú¸¦ ¾ò´Â´Ù.
-			AdminAskService aas=new AdminAskService();
-			//¾÷¹«Ã³¸® °á°ú¸¦ ¸ğµ¨¿¡ ÀúÀå 
-			model.addAttribute("list_data", aas.searchAskList(arVO));
+			int currentPage=Integer.parseInt( paramPage );
 			
-			return "admin/adAskList";
+			//í˜ì´ì§€ë³„ ì‹œì‘ ë²ˆí˜¸(ì—…ë¬´ë¡œì§)
+			int startNum=aas.startNum(currentPage, pageScale);
+			
+			//í˜ì´ì§€ë³„ ëë²ˆí˜¸(ì—…ë¬´ë¡œì§)
+			int endNum=aas.endNum(startNum,pageScale);
+			
+			//ì‹œì‘ë²ˆí˜¸ì™€ ëë²ˆí˜¸ ì‚¬ì´ì˜ ì›ê¸€ì„ ì¡°íšŒ
+			AskRangeVO arVO=new AskRangeVO(startNum, endNum);
+			
+			List<SelectAskListDomain> list=aas.searchAskList(arVO);
+			//model
+			model.addAttribute("list_data", list);
+			model.addAttribute("total_page", totalPage);
+			
+			return url;
 		}//askList
 	
 	/**
-	 * ¼±ÅÃµÈ ¹®ÀÇ±Û¹øÈ£¸¦ °¡Áö°í ¹®ÀÇ±Û »ó¼¼ Á¤º¸¸¦ º¸¿©ÁÖ´Â ÀÏ 
-	 * @param askNum : ¹®ÀÇ±Û ¹øÈ£ model : °Ô½Ã±ÛÀÇ »ó¼¼ ³»¿ë
+	 * ì„ íƒí•œ ë¬¸ì˜ê¸€ì˜ ìƒì„¸ ë‚´ìš©ì„ ë³´ëŠ” ì¼ 
+	 * @param ask_num : ë¬¸ì˜ê¸€ ë²ˆí˜¸ model : ë¬¸ì˜ê¸€ ìƒì„¸ ë‚´ìš©
 	 * @return 
 	 */
-	@RequestMapping(value="/admin/askListDetail.do", method = GET)
-	public String askListDetail( String askNum, Model model ) {
+	@RequestMapping(value="/ask/askListDetail.do", method = GET)
+	public String askListDetail( String ask_num, HttpSession session, Model model ) {
+		
+		String url="ask/adAskDetail";
+		//ë¡œê·¸ì¸ ì²´í¬ 
+		String id=(String)session.getAttribute("user_id");
+		
+		if(id == null) {
+			url="redirect:/admin/loginForm.do"; //
+		}
 		
 		
+		SelectAskDetailDomain sadd=null;
+		AdminAskService aas=new AdminAskService();
+		sadd=aas.searchAskDetail(ask_num);
+		//model
+		model.addAttribute("ask_detail", sadd);
 		
-		return "admin/adAddAnswer";
+		return url;
 	}//askListDetail
 	
 	/**
-	 * ¹®ÀÇ±ÛÀÇ ´äº¯À» Ãß°¡/¼öÁ¤/»èÁ¦ÇÏ´Â ÀÏ 
-	 * @param AddAnswerVO : ±Û¹øÈ£, ´äº¯³»¿ë model : Ãß°¡/¼öÁ¤/»èÁ¦ È®ÀÎ 
-	 * @return 
+	 * ì¶”ê°€/ìˆ˜ì •ëœ ë¬¸ì˜ê¸€ ë‹µë³€ì„ ê°€ì§€ê³  updateí•˜ëŠ” ì¼.
+	 * @param AddAnswerVO : ask_num, ask_answer
+	 * @return  
 	 */
-	@RequestMapping(value="/admin/addAnswer.do", method = GET)
-	public String addAnswer( AddAnswerVO adaVO, Model model ) {
+	@RequestMapping(value="/ask/updateAnswer.do", method = POST)
+	public String addAnswer( UpdateAnswerVO uaVO, Model model ) {
+				
+		int cnt=0;
+		AdminAskService aas=new AdminAskService();
+		cnt=aas.updateAnswer(uaVO);
+		//model
+		model.addAttribute("update_answer", cnt);
 		
-		
-		
-		return "admin/adAskList";
+		return "ask/redirect";
 	}//addAnswer
 	
 	/**
-	 * ¹®ÀÇ±ÛÀ» »èÁ¦ÇÏ´Â ÀÏ 
-	 * @param String : ±Û¹øÈ£ model : »èÁ¦ È®ÀÎ 
+	 * ë¬¸ì˜ê¸€ì„ ì‚­ì œí•˜ëŠ” ì¼.
+	 * @param String : ask_num model : cnt
 	 * @return 
 	 */
-	@RequestMapping(value="/admin/removeAnswer.do", method = GET)
-	public String removeAnswer( String askNum, Model model ) {
+	@RequestMapping(value="/ask/removeAnswer.do", method = GET)
+	public String removeAnswer( String ask_num, Model model ) {
+		int cnt=0;
+		AdminAskService aas=new AdminAskService();
+		cnt=aas.removeAsk(ask_num);
+		//model
+		model.addAttribute("delete_ask", cnt);
 		
-		
-		
-		return "admin/adAskList";
+		return "ask/redirect_del";
 	}//removeAnswer
 	
 	

@@ -1,109 +1,113 @@
 package kr.co.greentable.admin.dao;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import kr.co.greentable.admin.domain.SelectAskDetailDomain;
 import kr.co.greentable.admin.domain.SelectAskListDomain;
 import kr.co.greentable.admin.vo.AskRangeVO;
+import kr.co.greentable.admin.vo.UpdateAnswerVO;
 
 public class AdminAskDAO {
 
-	private static AdminAskDAO amaDAO;
-	private static SqlSessionFactory ssf;
-
+private static AdminAskDAO aaDAO;
+	
 	private AdminAskDAO() {
-		org.apache.ibatis.logging.LogFactory.useLog4JLogging(); // »ı¼ºÀÚ¿¡ myBatisÀÇ ·Î±×¸¦ ºÒ·¯¿À´Â ÄÚµå(log4j)
-	}// AdminAskDAO
-
+		
+	}//AdminAskDAO
+	
 	public static AdminAskDAO getInstance() {
-		if (amaDAO == null) {
-			amaDAO = new AdminAskDAO();
-		}
-		return amaDAO;
-	}// get insatnce
-
-	private SqlSessionFactory getSqlSessionFactory() throws IOException {
-		if (ssf == null) {
-			// 1.StreamÀ» »ç¿ëÇÏ¿© xml°ú ¿¬°á
-			String xmlConfig = "kr/co/greentable/admin/dao/mybatis_config.xml";
-			Reader reader = Resources.getResourceAsReader(xmlConfig);
-
-			// 2MyBatis Framework »ı¼º
-			ssf = new SqlSessionFactoryBuilder().build(reader);
-			reader.close();
-		} // end if
-		return ssf;
-	}// getSqlSessionFactory
-
-	public SqlSession getSqlSession() {
-		SqlSession ss = null;
-		try {
-			ss = getSqlSessionFactory().openSession();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return ss;
-	}// getSqlSession
+		if( aaDAO == null) {
+			aaDAO=new AdminAskDAO();
+		}//end if 
+		return aaDAO;
+	}//getInstance
 
 	/**
-	 * ¸ğµç ¹®ÀÇ±Û Á¶È¸ÇÏ´Â ÀÏ 
+	 * ì „ì²´ ë¬¸ì˜ê¸€ ìˆ˜ë¥¼ ê³„ì‚°í•˜ëŠ” ì¼.
+	 * @return ì´ ë¬¸ì˜ê¸€ ìˆ˜ 
+	 */
+	public int selectAskCnt() {
+		int cnt=0;
+		
+		//SQL
+		SqlSession ss=AskGetMyBatisHandler.getInstance().getSqlSession();
+		cnt=ss.selectOne("kr.co.greentable.admin.ask.allAskCnt");
+		
+		return cnt;
+	}//selectAskCnt
+	
+	/**
+	 * ì „ì²´ ë¬¸ì˜ê¸€ì„ ì¡°íšŒí•˜ëŠ” ì¼.
 	 * @return
 	 */
 	public List<SelectAskListDomain> selectAskList( AskRangeVO arVO ) {
 		List<SelectAskListDomain> list = null;
-		// MyBatisHandler ¾ò±â
-		SqlSession ss = getSqlSession();
-
-		list = ss.selectList("selectAllAsk");
-		// transaction ¿Ï·á
-		// MyBatis Handler Á¾·á.
+		// MyBatisHandler 
+		SqlSession ss=AskGetMyBatisHandler.getInstance().getSqlSession();
+		list = ss.selectList("kr.co.greentable.admin.ask.selectAllAsk", arVO);
 		ss.close();
 
 		return list;
-	}// selectAllTestMyBatis
+	}//selectAskList
 
 	/**
-	 * ÀÔ·ÂµÈ ÀÌ¹ÌÁö¸í(°¡Äª num)À¸·Î ÇÑ ÇàÀ» Á¶È¸.
-	 * 
-	 * @param img
+	 * ask_numì„ ë°›ì•„ ìƒì„¸ ë¬¸ì˜ê¸€ì„ ì¡°íšŒí•˜ëŠ” ì¼.
+	 * @param ask_num
 	 * @return
-	 *//*
-		 * public MyBatisDomain selectOneTestMyBatis( String img ) { MyBatisDomain
-		 * mbd=null;
-		 * 
-		 * SqlSession ss=getSqlSession(); mbd=ss.selectOne("selectOneTest", img);
-		 * ss.close(); return mbd; }//selectOneTestMyBatis
-		 * 
-		 * public int deleteTestMyBatis( String img ) { int cnt=0;
-		 * 
-		 * SqlSession ss=getSqlSession(); cnt=ss.delete("deleteTest", img); //"" ¾È¿¡´Â
-		 * Mapper¿¡¼­ ¸¸µç id¸¦ ³Ö¾î ÁØ´Ù. // <delete id="deleteTest" parameterType="String">
-		 * if(cnt == 1) { ss.commit(); }//end if ss.close();
-		 * 
-		 * return cnt; }//deleteTestMyBatis
-		 * 
-		 * public int updateMyBatis( ModifyMyBatisVO mmbVO ) { int cnt=0;
-		 * 
-		 * SqlSession ss=getSqlSession(); cnt=ss.update("updateTest", mmbVO);
-		 * 
-		 * if( cnt == 1 ) { ss.commit(); }//end if
-		 * 
-		 * ss.close();
-		 * 
-		 * return cnt; }//updateMyBatis
-		 */
-	
-	/*
-	 * public static void main(String[] args) {
-	 * System.out.println(AdminAskDAO.getInstance().selectAskList()); }//main
 	 */
+	public SelectAskDetailDomain selectAskDetail( String ask_num ) { 
+		SelectAskDetailDomain sadd=null;
+		
+		// MyBatisHandler 
+		SqlSession ss=AskGetMyBatisHandler.getInstance().getSqlSession();
+		sadd=ss.selectOne("kr.co.greentable.admin.ask.selectAskDetail",ask_num);
+		ss.close();
+		
+		return sadd;
+	}//selectAskDetail
+	
+	/**
+	 * ë¬¸ì˜ê¸€ ë‹µë³€ì„ ì¶”ê°€/ìˆ˜ì •í•˜ëŠ” ì¼.
+	 * @param aaVO
+	 * @return
+	 */
+	public int updateAnswer( UpdateAnswerVO uaVO ) {
+		int cnt=0;
+		
+		SqlSession ss=AskGetMyBatisHandler.getInstance().getSqlSession();
+		cnt=ss.update("updateAnswer", uaVO);
+		
+		if(cnt == 1) {
+			ss.commit();
+		}//end if
+		ss.close();
+		return cnt;
+	}//insertAnswer
+	
+	/**
+	 * ë¬¸ì˜ê¸€ì„ ì‚­ì œí•˜ëŠ” ì¼
+	 * @param ask_num
+	 * @return
+	 */
+	public int removeAsk( String ask_num ) {
+		int cnt=0;
+		
+		SqlSession ss=AskGetMyBatisHandler.getInstance().getSqlSession();
+		cnt=ss.delete("deleteAsk", ask_num);
+		
+		if(cnt == 1) {
+			ss.commit();
+		}//end if
+		ss.close();
+		return cnt;
+	}//removeAsk
+	
+	
+	 public static void main(String[] args) {
+		System.out.println(AdminAskDAO.getInstance().selectAskCnt());
+	 }//main
+	 
 	
 	 }// class 

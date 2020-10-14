@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.greentable.product">
+
+	<select id="selectSubCtg" parameterType="String" resultType="kr.co.greentable.admin.domain.SubCategoryDomain">
+		select sub_ctg_name
+		from sub_category
+		where main_ctg_name = #{mainCtg }
+	</select>
+	
+	<select id="selectMainCtg" resultType="kr.co.greentable.admin.domain.MainCategoryDomain">
+		select main_ctg_name
+		from main_category
+	</select>
+	
+	<insert id="insertProduct" parameterType="kr.co.greentable.admin.vo.ProductVO"> 
+		insert into product(product_num, product_name, pro_img_info, pro_img_thumb, product_tooltip, sub_ctg_name, on_sale, pro_text_info)
+		values('pro_'||pro_seq.nextval,#{productName},#{proImgInfoName},#{proImgThumbName},#{productTooltip},#{subCtg},#{onSale},#{proTextInfo})
+	</insert>
+	
+	<insert id="insertProductOption" parameterType="kr.co.greentable.admin.vo.ProductOptionVO"> 
+		insert into product_option(option_num, option_price, product_num, option_name)
+		values('opt_'||opt_seq.nextval,#{productPrice},#{productNum},#{productOption})
+	</insert>
+	
+	<select id="selectProductNum" parameterType="kr.co.greentable.admin.vo.ProductVO" resultType="String">
+		select product_num
+		from product
+		where product_name = #{productName} 
+		and product_tooltip = #{productTooltip}
+	</select>
+	
+	<select id="selectProductList" resultType="kr.co.greentable.admin.domain.ProductDomain">
+		select product_num, product_name, pro_img_info, pro_img_thumb, product_tooltip, s.main_ctg_name, s.sub_ctg_name, on_sale, pro_text_info
+		from product p, sub_category s
+		where p.sub_ctg_name = s.sub_ctg_name
+	</select>
+	
+	<select id="selectProductOptionList" resultType="kr.co.greentable.admin.domain.ProductOptionDomain" parameterType="String">
+		select option_num, option_price, option_name
+		from product_option
+		where trim(product_num) = #{productNum}
+	</select>
+	
+	<select id="selectMainProduct" resultType="kr.co.greentable.admin.domain.ProductDomain" parameterType="String">
+		select product_num, product_name, pro_img_info, pro_img_thumb, product_tooltip, s.main_ctg_name, s.sub_ctg_name, on_sale, pro_text_info
+		from product p, sub_category s
+		where p.sub_ctg_name = s.sub_ctg_name 
+		and s.main_ctg_name = #{mainCtg}
+		and on_sale in ('Y','N')
+	</select>
+	
+	<delete id="delProduct" parameterType="String">
+		delete from product 
+		where trim(product_num)=#{productNum}
+	</delete>
+
+	<delete id="delOptionProduct" parameterType="String">
+		delete from product_option 
+		where trim(product_num)=#{productNum}
+	</delete>
+	
+	<update id="productUpdate" parameterType="kr.co.greentable.admin.vo.UpdateProductVO">
+		update product 
+		set product_name=#{productName}, pro_img_info=#{proImgInfoName}, pro_img_thumb=#{proImgThumbName},
+			product_tooltip=#{productTooltip}, sub_ctg_name=#{subCtg}, on_sale=#{onSale}, pro_text_info=#{proTextInfo}	 
+		where trim(product_num)=#{productNum}
+	</update>
+</mapper>

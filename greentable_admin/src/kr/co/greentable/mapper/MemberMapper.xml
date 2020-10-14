@@ -9,7 +9,7 @@
 	 -->
 	
 	<!-- member 조회작업 : resultType 사용 -->
-	<select id="selectMemberList" parameterType="RangeVO" resultType="kr.co.greentable.admin.domain.SelectMemberListDomain">
+	<select id="selectMemberList" parameterType="String" resultType="kr.co.greentable.admin.domain.SelectMemberListDomain">
 		select id, name, email, to_char(join_date, 'yyyy-mm-dd hh24:mi') join_date
 		from member
 		where id = #{ id }

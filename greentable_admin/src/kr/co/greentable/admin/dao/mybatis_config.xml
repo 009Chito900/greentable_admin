@@ -20,5 +20,6 @@
   <!--실행할 쿼리문을 가진 xml 설정  -->
   <mappers>
     <mapper resource="kr/co/greentable/mapper/MemberMapper.xml"/>
+    <mapper resource="kr/co/greentable/mapper/ProductMapper.xml"/>
   </mappers>
 </configuration>

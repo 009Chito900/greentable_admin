@@ -8,7 +8,7 @@
 	<a href="admin_main.jsp"><img src="http://localhost/greentable_admin/common/images/logo3.png"/></a>
 </div>
 
-<ul>
+<ul id="mainMenu">
 	<li>
 		<a class="active" href="#">상품관리</a>
 	</li>

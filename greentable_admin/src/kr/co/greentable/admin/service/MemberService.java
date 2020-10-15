@@ -3,27 +3,141 @@ package kr.co.greentable.admin.service;
 import java.util.List;
 
 import kr.co.greentable.admin.dao.MemberDAO;
+import kr.co.greentable.admin.domain.SelectMemberDetailDomain;
 import kr.co.greentable.admin.domain.SelectMemberListDomain;
+import kr.co.greentable.admin.vo.MemberRangeVO;
+import kr.co.greentable.admin.vo.ModifyMemberVO;
 
-/**
- * °ü¸®ÀÚ È¸¿ø°ü¸® Service
- * @author sist27
- *
- */
 public class MemberService {
 	
-	public List<SelectMemberListDomain> selectMemberList(String currentPage, String id) {
+	/**
+	 * ì „ì²´ íšŒì›ì˜ ìˆ˜
+	 * @return totalCnt: ì „ì²´ íšŒì›ì˜ ìˆ˜
+	 */
+	public int totalCount() {
+		
+		int totalCnt = 0;
+		
+		MemberDAO mDAO = MemberDAO.getInstance();
+		totalCnt = mDAO.selectMemberCnt();
+		
+		return totalCnt;
+	}//totalCount
+	
+	
+	/**
+	 * í•œ í™”ë©´ì— ë³´ì—¬ì¤„ ê²Œì‹œë¬¼ì˜ ìˆ˜: 10ê±´
+	 * @return
+	 */
+	public int pageScale() {
+		
+		int pageScale = 5;
+		
+		return pageScale;
+	}//pageScale
+	
+	
+	/**
+	 * ì´ í˜ì´ì§€ ìˆ˜
+	 * @param totalCount
+	 * @param pageScale
+	 * @return
+	 */
+	public int totalPage( int totalCount, int pageScale) {
+		
+		int totalPage = (int)Math.ceil( (double)totalCount / pageScale );
+		
+		return totalPage;
+	}//totalPage
+	
+	
+	/**
+	 * ì‹œì‘ë²ˆí˜¸
+	 * @param currentPage
+	 * @param pageScale
+	 * @return
+	 */
+	public int startNum( int currentPage, int pageScale) {
+		
+		int startNum = currentPage * pageScale - pageScale + 1;
+		
+		return startNum;
+	}//startNum
+	
+	
+	/**
+	 * ëë²ˆí˜¸
+	 * @param startNum
+	 * @param pageScale
+	 * @return
+	 */
+	public int endNum( int startNum, int pageScale) {
+		
+		int endNum = startNum + pageScale - 1;
+		
+		return endNum;
+	}//endNum
+	
+	
+	/**
+	 * íšŒì›ê´€ë¦¬ ì „ì²´ íšŒì› ë¦¬ìŠ¤íŠ¸
+	 * í˜ì´ì§€ë„¤ì´ì…˜ ê³„ì‚° MemberRangeVO(startNum, endNum) 
+	 * @param mrVO
+	 * @return
+	 */
+	public List<SelectMemberListDomain> selectMemberList(MemberRangeVO mrVO) {
 		
 		List<SelectMemberListDomain> list = null;
 		
-		//DAO »ç¿ë
 		MemberDAO mDAO = MemberDAO.getInstance();
-		
-		//RangeVO¸¦ »ç¿ëÇÏ¿© ¿¬»êµÈ ½ÃÀÛ¹øÈ£ ³¡¹øÈ£¸¦ °¡Áö°í , ¾ÆÀÌµğ¸¦ ÀúÀå
-		//Á¶È¸ÇÏ´Â ¸ğµç °ªµéÀ» ÇÕÃÄ¼­ ³Ö¾îÁà¾ß ÇÑ´Ù.
-		list = mDAO.selectMemberList(id);
+		list = mDAO.selectMemberList(mrVO);
 		
 		return list;
 	}//selectMemberList
 	
+	/**
+	 * ì•„ì´ë””ë¡œ í•œ í–‰ ì¡°íšŒ
+	 * @param id
+	 * @return
+	 */
+	public SelectMemberDetailDomain selectMemberDetailList(String id) {
+		
+		SelectMemberDetailDomain smdd = null;
+
+		MemberDAO mDAO = MemberDAO.getInstance();
+		smdd = mDAO.selectMemberOneList(id);
+		
+		return smdd;
+	}//selectMemberDetailList
+	
+	/**
+	 * íšŒì› ì‚­ì œ
+	 * @param id
+	 * @return
+	 */
+	public boolean removeMember(String id) {
+
+		boolean flag = false;
+
+		MemberDAO mDAO = MemberDAO.getInstance();
+		flag = mDAO.deleteMember(id) == 1;
+
+		return flag;
+	}//removeMember
+	
+	/**
+	 * íšŒì› ìˆ˜ì •
+	 * @param mmVO
+	 * @return
+	 */
+	public boolean modifyMember( ModifyMemberVO mmVO) {
+
+		boolean flag = false;
+
+		MemberDAO mDAO = MemberDAO.getInstance();
+		flag = mDAO.updateMember(mmVO) == 1; //í•œ í–‰ì´ ë³€ê²½ë˜ë©´ false ì•„ë‹ˆë©´ true?
+
+		return flag;
+	}//modifyMember
+
 }//class

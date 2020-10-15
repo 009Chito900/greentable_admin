@@ -1,92 +1,131 @@
 package kr.co.greentable.admin.dao;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.List;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import kr.co.greentable.admin.domain.SelectMemberDetailDomain;
 import kr.co.greentable.admin.domain.SelectMemberListDomain;
+import kr.co.greentable.admin.vo.MemberRangeVO;
+import kr.co.greentable.admin.vo.ModifyMemberVO;
 
-/**
- * °ü¸®ÀÚ È¸¿ø°ü¸® DAO
- * @author sist27
- *
- */
 public class MemberDAO {
-	
+
 	private static MemberDAO mDAO;
-	private static SqlSessionFactory ssf;
-	
+
 	private MemberDAO() {
-		org.apache.ibatis.logging.LogFactory.useLog4JLogging(); //log Âï´Â°Å
-		
 	}//MemberDAO
-	
+
 	public static MemberDAO getInstance() {
-		
 		if( mDAO == null ) {
 			mDAO = new MemberDAO();
 		}//end if
-		
+
 		return mDAO;
-		
 	}//getInstance
-	
-	
-	private SqlSessionFactory getSqlSessionFactory() throws IOException {
-		
-		if( ssf == null ) {
-			
-			//1. È¯°æ¼³Á¤ XMLÀ» StreamÀ» »ç¿ëÇÏ¿© xml°ú ¿¬°á
-			String xmlConfig = "kr/co/greentable/admin/dao/mybatis_config.xml";
-			Reader reader = Resources.getResourceAsReader(xmlConfig);//ÀÔ·ÂµÈ °æ·ÎÀÇ ÆÄÀÏ°ú ½ºÆ®¸²À» ¿¬°á
-			
-			//2. SqlSessionFactoryBuilder »ı¼º  : MyBatisFramework »ı¼º
-			//  DB ¿¬°á À¯Áö, XML Parsing, Äõ¸®¹®À» ½ÇÇà 
-			ssf = new SqlSessionFactoryBuilder().build(reader);
-			
-			reader.close(); //xmlÀ» ÀĞ¾îµéÀÎ ½ºÆ®¸²À» ²÷´Â´Ù.
-		}//end if
-		
-		return ssf;
-	}//getSqlSessionFactory
-	
-	
+
+
+	public int selectMemberCnt() {
+
+		int cnt = 0;
+
+		//MyBatis Handler ì–»ê¸°
+		SqlSession ss = GetMyBatisHandler_jh.getInstance().getSqlSession();
+		cnt = ss.selectOne("kr.co.greentable.member.allMemberCnt");
+		ss.close();
+
+		return cnt;
+	}//selectMemberCnt
+
+
 	/**
-	 * SqlSession ¾ò±â(MyBatis handler ¾ò±â): °³¹ßÀÚ°¡ »ç¿ëÇÏ¿© Á¶ÀÛ 
-	 * - autocommitÀ» Áö¿øÇÏÁö ¾Ê´Â´Ù. commit()À» º°µµ·Î ¼öÇà, »ç¿ëÀÌ Á¾·áµÇ¸é ´İ´Â´Ù. 
+	 * íšŒì›ê´€ë¦¬ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ (ì•„ì´ë””, ì´ë¦„, ì´ë©”ì¼, ê°€ì…ì¼)
+	 * í˜ì´ì§€ë„¤ì´ì…˜ MemberRangeVO(startNum, endNum)
+	 * @param mrVO
 	 * @return
 	 */
-	public SqlSession getSqlSession() {
-		
-		SqlSession ss = null;
-		
-		try {
-			ss = getSqlSessionFactory().openSession();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}//end catch
-		
-		return ss;
-	}//getSqlSession
-	
-	public List<SelectMemberListDomain> selectMemberList(String id) {
-		
+	public List<SelectMemberListDomain> selectMemberList( MemberRangeVO mrVO) {
+
 		List<SelectMemberListDomain> list = null;
-		
-		//MyBatis Handler ¾ò±â
-		SqlSession ss = getSqlSession();
-		
-		list = ss.selectList("selectMemberList", id); //Mapper¿¡¼­ Ã£¾Æ ÆÄ½ÌÇÏ¿© ½ÇÇàÇØ¾ß µÉ id, °ª
-		
+
+		//MyBatis Handler ì–»ê¸°
+		SqlSession ss = GetMyBatisHandler_jh.getInstance().getSqlSession();
+		list = ss.selectList("selectMemberList", mrVO); 
 		ss.close();
-		
+
 		return list;
-		
 	}//selectMemberList
+
+
+	/**
+	 * idë¡œ í•œ í–‰ì„ ì¡°íšŒ
+	 * @param id
+	 * @return
+	 */
+	public SelectMemberDetailDomain selectMemberOneList( String id) {
+
+		SelectMemberDetailDomain smdd = null;
+
+		//MyBatis Handler ì–»ê¸°
+		SqlSession ss = GetMyBatisHandler_jh.getInstance().getSqlSession();
+		smdd = ss.selectOne("selectMemberDetailList", id);
+		ss.close();
+
+		return smdd;
+	}//selectMemberOneList
+
+
+	public int deleteMember( String id) {
+
+		int cnt = 0;
+
+		SqlSession ss = GetMyBatisHandler_jh.getInstance().getSqlSession();
+		cnt = ss.delete("deleteMember", id);
+
+		if( cnt == 1 ) {
+			ss.commit();
+		}//end if
+
+		ss.close();
+
+		return cnt;
+	}//deleteMember
+
+
+	public int updateMember( ModifyMemberVO mmVO) {
+
+		int cnt = 0;
+
+		SqlSession ss = GetMyBatisHandler_jh.getInstance().getSqlSession();
+		cnt = ss.update("updateMember", mmVO);
+
+		if( cnt == 1 ) {
+			ss.commit();
+			System.out.println("ìˆ˜ì •ì™„ë£Œ");
+		}//end if
+
+		ss.close();
+
+		return cnt;
+	}//updateMyBatis
+
+
+	public static void main(String[] args) {
+		//ë‹¨ìœ„ í…ŒìŠ¤íŠ¸
+		//		MemberRangeVO mrVO = new MemberRangeVO();
+		//		mrVO.setStartNum(1);
+		//		mrVO.setEndNum(10);
+
+		ModifyMemberVO mmVO = new ModifyMemberVO();
+		//		mmVO.setId("park9396");
+		mmVO.setId("kim1");
+		mmVO.setEmail("park3@daum.net");
+		mmVO.setAddr1("ì„œìš¸ì‹œ ë§ˆí¬êµ¬ ì…”êµë™");
+		mmVO.setAddr2("í‘¸ë¥´ì§€ì˜¤2ì°¨ ì•„íŒŒíŠ¸ 101í˜¸");
+		mmVO.setZipcode("00421");
+		mmVO.setPhone("01031314646");
+
+		System.out.println(MemberDAO.getInstance().updateMember(mmVO) );
+	}
 
 }//class

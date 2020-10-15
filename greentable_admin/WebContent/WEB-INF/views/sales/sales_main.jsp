@@ -152,55 +152,42 @@ $(document).ready(function () {
 	   $("#order_date").val("");
    }
     
-    
 });//ready
 </script>
 
 </head>
 <body>
  	<div id="wrapper">
-
 		<div id="header">
- 
 			<img src="http://localhost/group3_admin/common/images/logo.png"/>
-
 		</div>
 
 		<div id="container">
-			 
 			<ul>
-			  <li><a class="active" href="#home">상품관리</a></li>
-			  <li><a href="#news">판매관리</a></li>
-			  <li><a href="#contact">매출조회</a></li>
-			  <li><a href="#contact">문의글 관리</a></li>
-			  <li><a href="#contact">회원 관리</a></li>
-			</ul> 
+				<li><a class="active" href="#home">상품관리</a></li>
+				<li><a href="#news">판매관리</a></li>
+				<li><a href="#contact">매출조회</a></li>
+				<li><a href="#contact">문의글 관리</a></li>
+				<li><a href="#contact">회원 관리</a></li>
+			</ul>
 
+			<form id="frm" action="sales.do" method="get">
+				<div id="datePickerWrap">
+					<input type="text" id="order_date" name="order_date"
+						placeholder="날짜 선택" style="width: 120px" />
+					<button type="button" id="btn" class="btn btn-light">매출 보기</button>
+				</div>
+				<div id="tableWrap">
 
-<form id="frm" action="sales.do" method="get">  
-<div id="datePickerWrap">
+					<c:if test="${param.order_date != null}">
+						<c:import url="/sales_process.do" />
+					</c:if>
+
+				</div>
+			</form>
+		</div>
+		<!-- container -->
 	
-
-	<input type="text" id="order_date" name="order_date" placeholder="날짜 선택" style="width:120px"/>
-	<button type="button" id="btn" class="btn btn-light"> 매출 보기</button>
-
-</div>
-	<div id="tableWrap">
-
-	<c:if test="${param.order_date != null}">
-
-	 <c:import url="/sales_process.do"/> 
-
-	 </c:if>
-	
-	
-	</div>
- 	
- 	</form> 
-	
-	
-</div>
-</div>		
 		<div id="footer">
 			<p>
 				With supporting text below as a natural lead-in to additional
@@ -208,7 +195,7 @@ $(document).ready(function () {
 			</p>
 		</div>
 		
-
+	</div>		
 
 </body>
 </html>

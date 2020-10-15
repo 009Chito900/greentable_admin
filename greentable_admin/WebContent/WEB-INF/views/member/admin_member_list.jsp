@@ -1,13 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
-	info="관리자 회원관리 페이지" %>
+	info="관리자 회원관리 페이지"
+%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<!-- <link rel="stylesheet" type="text/css"href="http://211.238.142.27/group3_admin/common/css/main.css"> -->
 <title>관리자 회원관리</title>
+
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<!-- 다음 우편 번호 API -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- Google CDN -->
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
 <style>
 #wrap {
 	width: 1300px;
@@ -15,15 +29,17 @@
 	margin: 0px auto;
 }
 
-#header {
+#header { 
+	width: 100%;
+	margin: 0px auto;
 }
 
 #container {
 	position: relative;
 	width: 1300px;
-	min-height: 450px; 
+	min-height: 500px;
 	margin: 0px auto;
-	margin-top: 120px;
+	margin-top: 80px;
 }
 
 #footer {
@@ -32,60 +48,8 @@
 	position: relative;
 	text-align: center;
 	height: 100px;
-	background-color: /* #F6F6F6 */;
+	background-color: #F6F6F6;
 	margin-top: 100px;
-}
-
-img {
-	width: 200px;
-	margin-left: 45%;
-	margin-top: 20px;
-	margin-bottom: 30px;
-}
-
-ul {
-	list-style-type: none;
-  	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #264429;
-	position: -webkit-sticky; /* Safari */
-	position: sticky;
-	top: 0;
-}
-
-li {
-	float: left;
-	width: 20%;
-	line-height: 55px;
-	text-align: center;
-}
-
-li a {
-	display: block;
-	color: white;
-	text-decoration: none;
-	font-size: 18px;
-}
-
-li a:hover {
-	color: #fff;
-	text-decoration: none;
-	background-color: #264429;
-}
-
-/* 선택된 메뉴 표시 */
-.active {
-	background-color: #264429;
-}
-
-.results tr[visible='false'],
-.no-result{
-  display:none;
-}
-
-.results tr[visible='true']{
-  display:table-row;
 }
 
 .counter{
@@ -97,48 +61,81 @@ li a:hover {
 	width: 300px;
 }
 
+#paginationUl {
+	background-color: #fff;
+}
+
+#paginationUl a {
+	background-color: #fff; 
+	color: #333;
+	width: 30px;
+}
+
+#paginationUl a:hover {
+	color: #2121FF;
+}
+
 .pagination {
 	width: 200px;
 	margin: 0 auto;
 	margin-top: 50px;
 }
 </style>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-<!-- Google CDN -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
 <script type="text/javascript">
-$(document).ready(function() {
-	  $(".search").keyup(function () {
-	    var searchTerm = $(".search").val();
-	    var listItem = $('.results tbody').children('tr');
-	    var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
-	    
-	  $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
-	        return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-	    }
-	  });
-	    
-	  $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
-	    $(this).attr('visible','false');
-	  });
-
-	  $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
-	    $(this).attr('visible','true');
-	  });
-
-	  var jobCount = $('.results tbody tr[visible="true"]').length;
-	    $('.counter').text(jobCount + ' item');
-
-	  if(jobCount == '0') {$('.no-result').show();}
-	    else {$('.no-result').hide();}
-			  });
-	}); 
-
+$(function(){
+	
+	<c:if test ="${ move_page eq 'del' }">
+		<c:if test = "${ delFlag}">
+			alert("회원이 삭제되었습니다.");
+		</c:if>
+		
+		<c:if test = "${ not delFlag}">
+			alert("회원을 삭제하지 못했습니다.");
+			history.back();
+	   	</c:if>
+	   	
+	</c:if>
+	
+	<c:if test ="${ move_page eq 'upd' }">
+		<c:if test = "${ updFlag}">
+			alert("회원이 수정되었습니다.");
+		</c:if>
+		
+		<c:if test = "${ not updFlag}">
+			alert("회원을 수정하지 못했습니다.");
+			history.back();
+	   	</c:if>
+	   	
+	</c:if>
+	
+	
+	//회원테이블 검색
+	$(".search").keyup(function () {
+		var searchTerm = $(".search").val();
+		var listItem = $('.results tbody').children('tr');
+		var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
+	  
+		$.extend($.expr[':'], {'containsi': function(elem, i, match, array){
+		      return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+		}
+		});//extend
+		  
+		$(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
+		  $(this).attr('visible','false');
+		});//each
+		
+		$(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
+		  $(this).attr('visible','true');
+		});
+		
+		var jobCount = $('.results tbody tr[visible="true"]').length;
+		  $('.counter').text(jobCount + ' item');
+		
+		if(jobCount == '0') {$('.no-result').show();}
+		  else {$('.no-result').hide();}
+	});//keyup
+	
+});//ready
 </script>
 
 </head>
@@ -146,71 +143,67 @@ $(document).ready(function() {
 	<div id="wrapper">
 
 		<div id="header">
- 
-			<img src="http://localhost/final_prj/common/images/logo3.png"/>
-			
-			<ul>
-			  <li><a class="active" href="#home">상품관리</a></li>
-			  <li><a href="#news">판매관리</a></li>
-			  <li><a href="#contact">매출조회</a></li>
-			  <li><a href="#contact">문의글 관리</a></li>
-			  <li><a href="#contact">회원 관리</a></li>
-			</ul>
-
+ 			<div id="naviBar">
+				 <c:import url="/common/jsp/admin-header.jsp" /> 
+			</div>
 		</div>
+		<!-- header -->
  
 		<div id="container">
-
-			<a href="admin_member_list.do">모든 리스트 조회</a>
 
 			<div id="form-group">
 				<input type="text" class="search form-control" placeholder="아이디 검색">
 			</div>
 			
 			<span class="counter"></span>
-			<table class="table table-hover table-bordered results">
+			<table class="table table-bordered results">
 				<thead>
 					<tr>
-						<th style="width: ">#</th>
 						<th>아이디</th>
 						<th>이름</th>
 						<th>이메일</th>
 						<th>가입일</th>
 					</tr>
-				<%-- 	<c:if test="${empty list_date }" />
-					<tr>
-						<td colspan="2">입력된 데이터가 존재하지 않습니다.</td>
-					</tr> --%>
-					<tr class="warning no-result">
-						<td colspan="4"><i class="fa fa-warning"></i> No result</td>
-					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="md" items="${member_list }">
+					<c:if test="${ empty list_data }" >
 					<tr>
-						<td><a href="admin_memberInfo.jsp"><c:out value="${md.id }"/></a></td>
-						<td><c:out value="${md.name}"/></td>
-						<td><c:out value="${md.email}"/></td>
-						<td><c:out value="${md.join_date}"/></td>
+						<td colspan="4">입력된 데이터가 존재하지 않습니다.</td>
 					</tr>
+					</c:if>
+					<c:forEach var="smld" items="${ list_data }"> <!-- SelectMemberListDomain -->
+						<tr>
+							<td><a href="admin_member_detail.do?id=${ smld.id }"><c:out value="${smld.id }" /> </a></td>
+							
+							<td> <c:out value="${smld.name }" /></td>
+							<td><c:out value="${smld.email }" /></td>
+							<td><c:out value="${smld.join_date }" /></td>
+						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
-
+			
+			<!-- Pagination -->
 			<nav aria-label="Page navigation example">
-				<ul class="pagination">
-					<li class="page-item"><a class="page-link" href="#"
-						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-					</a></li>
-					<li class="page-item"><a class="page-link" href="#">1</a></li>
-					<li class="page-item"><a class="page-link" href="#">2</a></li>
-					<li class="page-item"><a class="page-link" href="#">3</a></li>
-					<li class="page-item"><a class="page-link" href="#"
-						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-					</a></li>
-				</ul>
+			  <ul class="pagination justify-content-center" id="paginationUl">
+			    <li class="page-item">
+			      <a class="page-link" href="#" aria-label="Previous">
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			  	<c:forEach var="num" begin="1" end="${total_page }" step="1">
+			   		<a href="/greentable_admin/admin_member_list.do?paramPage=${num }">${ num }</a>
+			   	</c:forEach>
+			    <li class="page-item">
+			      <a class="page-link" href="#" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
 			</nav>
+			
 		</div>
+		<!-- container -->
 
 		<div id="footer">
 			<p>
@@ -218,8 +211,8 @@ $(document).ready(function() {
 				content.<br /> &copy; CopyRight. All Right Reserved. Class A
 			</p>
 		</div>
-		 
+		<!-- footer -->
+				 
 	</div>
-
 </body>
 </html>

@@ -16,7 +16,7 @@ private static AdminAskDAO aaDAO;
 	private AdminAskDAO() {
 		
 	}//AdminAskDAO
-	
+//	
 	public static AdminAskDAO getInstance() {
 		if( aaDAO == null) {
 			aaDAO=new AdminAskDAO();
@@ -103,11 +103,11 @@ private static AdminAskDAO aaDAO;
 		ss.close();
 		return cnt;
 	}//removeAsk
-	
+//	
 	
 	 public static void main(String[] args) {
 		System.out.println(AdminAskDAO.getInstance().selectAskCnt());
 	 }//main
-	 
+//	 
 	
 	 }// class 

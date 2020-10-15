@@ -8,25 +8,36 @@
 <head>
 <meta charset="UTF-8">
 <title>매출조회</title>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<!-- 다음 우편 번호 API -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- Google CDN -->
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+
 <style>
- #wrap {
+#wrap {
 	width: 1300px;
 	height: 930px;
 	margin: 0px auto;
 }
 
-#header {
-	width: 1300px;
-	height: 20px;
+#header { 
+	width: 100%;
+	margin: 0px auto;
 }
 
 #container {
 	position: relative;
 	width: 1300px;
-	min-height: 600px;
-	position: relative;
+	min-height: 500px;
 	margin: 0px auto;
 	margin-top: 80px;
 }
@@ -37,81 +48,29 @@
 	position: relative;
 	text-align: center;
 	height: 100px;
-	background-color: /* #F6F6F6 */;
+	background-color: #F6F6F6;
 	margin-top: 100px;
 }
 
-img {
-	width: 200px;
-	margin-left: 550px
-}
-
-ul {
-	list-style-type: none;
-	margin: 0 auto;
-	padding: 0;
-	overflow: hidden;
-	background-color: #264429;
-	position: -webkit-sticky; /* Safari */
-	position: sticky;
-	top: 0;
-	overflow: hidden;
-}
-
-li {
-	float: left;
-	width: 20%;
-	height: 45px;
-	line-height: 50px;
-	text-align: center;
-}
-
-li a {
-	display: block;
-	color: white;
-	text-decoration: none;
-}
-
-li a:hover {
-	color: #fff;
-	text-decoration: none;
-	background-color: #264429;
-}
- 
-/* 선택된 메뉴 표시 */
-.active {
-	background-color: #264429;
-}
-
 /* 내가 추가  */
-#contents{
+#contents {
 	margin: 0px auto;
 	padding-top:30px;
-
 }
 
-
-#datePickerWrap{
+#datePickerWrap {
 	width:1300px;
 	padding-top:30px;
 	padding-left:30px;
 	padding-bottom:30px;
-	
-	}
-	#tableWrap{
+}
+
+#tableWrap {
 	width:1300px;
 	margin:0px, auto;
 	
-	}
-/* 내가 추가  */
-
+}
 </style>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-
-<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
 <!-- DatePicker -->
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
@@ -138,7 +97,6 @@ $(document).ready(function () {
               //종료일(endDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
              //$("#complete_date").datepicker( "option", "minDate", selectedDate );
          //}    
-
     });//datepicker
 
     $("#btn").click(function() {
@@ -150,7 +108,7 @@ $(document).ready(function () {
    if($("#order_date").val().length>10 ){
 	   
 	   $("#order_date").val("");
-   }
+   }//end if
     
 });//ready
 </script>
@@ -159,17 +117,13 @@ $(document).ready(function () {
 <body>
  	<div id="wrapper">
 		<div id="header">
-			<img src="http://localhost/group3_admin/common/images/logo.png"/>
+ 			<div id="naviBar">
+				<c:import url="/common/jsp/admin-header.jsp" />
+			</div>
 		</div>
+		<!-- header -->
 
 		<div id="container">
-			<ul>
-				<li><a class="active" href="#home">상품관리</a></li>
-				<li><a href="#news">판매관리</a></li>
-				<li><a href="#contact">매출조회</a></li>
-				<li><a href="#contact">문의글 관리</a></li>
-				<li><a href="#contact">회원 관리</a></li>
-			</ul>
 
 			<form id="frm" action="sales.do" method="get">
 				<div id="datePickerWrap">
@@ -177,14 +131,14 @@ $(document).ready(function () {
 						placeholder="날짜 선택" style="width: 120px" />
 					<button type="button" id="btn" class="btn btn-light">매출 보기</button>
 				</div>
+				
 				<div id="tableWrap">
-
 					<c:if test="${param.order_date != null}">
 						<c:import url="/sales_process.do" />
 					</c:if>
-
 				</div>
 			</form>
+			
 		</div>
 		<!-- container -->
 	
@@ -194,8 +148,8 @@ $(document).ready(function () {
 				content.<br /> &copy; CopyRight. All Right Reserved. Class A
 			</p>
 		</div>
+		<!-- footer -->
 		
 	</div>		
-
 </body>
 </html>

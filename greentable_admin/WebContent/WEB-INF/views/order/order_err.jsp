@@ -6,17 +6,51 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<style type="text/css">
-
-</style>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+<title>판매관리 에러 페이지</title>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<!-- 다음 우편 번호 API -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <!-- Google CDN -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<!-- 부트스트랩 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+
+<style>
+#wrap {
+	width: 1300px;
+	height: 930px;
+	margin: 0px auto;
+}
+
+#header { 
+	width: 100%;
+	margin: 0px auto;
+}
+
+#container {
+	position: relative;
+	width: 1300px;
+	min-height: 500px;
+	margin: 0px auto;
+	margin-top: 80px;
+}
+
+#footer {
+	width: 100%;
+	padding: 20px;
+	position: relative;
+	text-align: center;
+	height: 100px;
+	background-color: #F6F6F6;
+	margin-top: 100px;
+}
+</style>
 
 <script type="text/javascript">
    $(function(){
@@ -25,29 +59,31 @@
 </script>
 </head>
 <body>
-<div id="wrap">
-   <div id="header">
-      <div id="headerTop">
-         <div id="mainText" title="클라쓰 A">Class A</div>
-      </div>
-      <div id="naviBar">
-         
-      </div>
-   </div>
-   <div id="container">
-      
-      <strong>문제발생</strong>
-      <div>
-      <c:out value="${errMsg }"/>에 대한 문제가 발생하였습니다.
-      </div>
-      
-   </div>
-   <div id="footer">
-      <div id="footerLogo"> </div>
-      <div id="footerContnent">
-         &copy;CopyRight. All Right Reserved. Class A
-      </div>
-   </div>
-</div>
+	<div id="wrapper">
+		<div id="header">
+			<div id="naviBar">
+				<c:import url="/common/jsp/admin-header.jsp" />
+			</div>
+		</div>
+		<!-- header -->
+
+		<div id="container">
+
+			<strong>문제발생</strong>
+			<div>
+				<c:out value="${errMsg }" /> 에 대한 문제가 발생하였습니다.
+			</div>
+		</div>
+		<!-- container -->
+		
+		<div id="footer">
+			<p>
+				With supporting text below as a natural lead-in to additional
+				content.<br /> &copy; CopyRight. All Right Reserved. Class A
+			</p>
+		</div>
+		<!-- footer -->
+
+	</div>
 </body>
 </html>

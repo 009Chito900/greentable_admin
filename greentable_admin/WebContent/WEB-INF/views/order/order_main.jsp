@@ -2,33 +2,44 @@
 	pageEncoding="UTF-8"
 	info="판매관리"
 %>
-   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-   <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>판매관리</title>
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<!-- 다음 우편 번호 API -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- Google CDN -->
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- 부트스트랩 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+
 <style>
- #wrap {
+#wrap {
 	width: 1300px;
 	height: 930px;
 	margin: 0px auto;
 }
 
-#header {
-	width: 1300px;
-	height: 20px;
-	margin:0px auto
+#header { 
+	width: 100%;
+	margin: 0px auto;
 }
 
 #container {
 	position: relative;
 	width: 1300px;
-	min-height: 600px;
-	position: relative;
+	min-height: 500px;
 	margin: 0px auto;
 	margin-top: 80px;
 }
@@ -39,80 +50,23 @@
 	position: relative;
 	text-align: center;
 	height: 100px;
-	background-color: /* #F6F6F6 */;
+	background-color: #F6F6F6;
 	margin-top: 100px;
 }
 
-img {
-	width: 200px;
-	margin-left: 550px
-}
-
-ul {
-	list-style-type: none;
-	margin: 0 auto;
-	padding: 0;
-	overflow: hidden;
-	background-color: #264429;
-	position: -webkit-sticky; /* Safari */
-	position: sticky;
-	top: 0;
-	overflow: hidden;
-}
-
-li {
-	float: left;
-	width: 20%;
-	height: 45px;
-	line-height: 50px;
-	text-align: center;
-}
-
-li a {
-	display: block;
-	color: white;
-	text-decoration: none;
-}
-
-li a:hover {
-	color: #fff;
-	text-decoration: none;
-	background-color: #264429;
-}
- 
-/* 선택된 메뉴 표시 */
-.active {
-	background-color: #264429;
-}
-
 /* 내가 추가  */
-#contents{
+#contents {
 	margin: 0px auto;
 	padding-top:30px;
-
 }
 
-
-#datePickerWrap{
-	width:1300px;
-	padding-top:30px;
-	padding-left:30px;
-	padding-bottom:30px;
-	
-	}
-	#tableWrap{
+#tableWrap {
 	width:1300px;
 	margin:0px, auto;
-	
-	}
+}
 /* 내가 추가  */
 
 </style>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-
-<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
 <!-- DatePicker -->
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
@@ -153,7 +107,6 @@ $(document).ready(function () {
   	
     });//click
  
-    
     <c:if test="${move_page eq 'del'}">
 		<c:if test="${delFlag}">
 	alert("글이 삭제되었습니다.");
@@ -170,49 +123,36 @@ $(document).ready(function () {
 
 </head>
 <body>
- 	<div id="wrapper">
-
+	<div id="wrapper">
 		<div id="header">
- 
-			<img src="common/images/logo2.png"/>
-
+			<div id="naviBar">
+				<c:import url="/common/jsp/admin-header.jsp" />
+			</div>
 		</div>
+		<!-- header -->
 
 		<div id="container">
-			 
-			<ul>
-			  <li><a class="active" href="#home">상품관리</a></li>
-			  <li><a href="#news">판매관리</a></li>
-			  <li><a href="#contact">매출조회</a></li>
-			  <li><a href="#contact">문의글 관리</a></li>
-			  <li><a href="#contact">회원 관리</a></li>
-			</ul> 
-			
-<form id="frm" action="order.do" method="get">  
-<div id="datePickerWrap">
-	
-	<input type="text" id="orderDate" name="orderDate"  value="${ param.orderDate }" style="width:120px"/>
-	
-	<button type="button" id="btn" class="btn btn-light">  판매상품 보기</button>
-	</div>
 
-
-	<c:if test="${param.orderDate != null}">
-	<c:import url="/order_pocess.do"/>
-	</c:if>
-	
-</form>
-</div>
-</div>		
+			<form id="frm" action="order.do" method="get">
+				<div id="datePickerWrap">
+					<input type="text" id="orderDate" name="orderDate" value="${ param.orderDate }" style="width: 120px" />
+					<input type="button" id="btn" class="btn btn-outline-success" value="판매상품 보기"/>
+				</div>
+				<c:if test="${param.orderDate != null}">
+					<c:import url="/order_pocess.do" />
+				</c:if>
+			</form>
+		</div>
+		<!-- container -->
 		
-
 		<div id="footer">
 			<p>
 				With supporting text below as a natural lead-in to additional
 				content.<br /> &copy; CopyRight. All Right Reserved. Class A
 			</p>
 		</div>
-		
-
+		<!-- footer -->
+			
+	</div>
 </body>
 </html>

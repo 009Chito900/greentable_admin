@@ -19,7 +19,7 @@ public class SalesService {
 	}
 	//한 화면 보여줄 수
 	public int pageScale() {
-		int pageScale=5;
+		int pageScale=15;
 		return pageScale;
 	}
 	//총 페이지 수

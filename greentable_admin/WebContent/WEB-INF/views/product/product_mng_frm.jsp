@@ -25,7 +25,7 @@
 
 <!-- CSS -->
 <link rel="stylesheet" type="text/css"
-	href="http://localhost/greentable_admin/common/css/admin-header.css">
+	href="common/css/admin-header.css">
 
 <style>
 #wrap {

@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+<link rel="stylesheet" type="text/css" href="common/css/admin-header.css">
 <style>
 #wrap {
 	width: 1300px;

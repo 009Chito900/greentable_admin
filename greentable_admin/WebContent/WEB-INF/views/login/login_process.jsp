@@ -18,8 +18,7 @@ $(function () {
 			location.href='login_frm.do';
 		
 		}else{
-		alert($("#user_id").val()+"님 로그인 성공");
-		location.replace('login_frm.do');
+			location.href='product_mng_frm.do';
 		}
 	
 

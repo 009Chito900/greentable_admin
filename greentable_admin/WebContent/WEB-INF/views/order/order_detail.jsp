@@ -25,25 +25,24 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+<link rel="stylesheet" type="text/css" href="common/css/admin-header.css">
 
 <style>
- #wrap {
+#wrap {
 	width: 1300px;
 	height: 930px;
 	margin: 0px auto;
 }
 
-#header {
-	width: 1300px;
-	height: 20px;
+#header { 
+	width: 100%;
+	margin: 0px auto;
 }
 
 #container {
 	position: relative;
 	width: 1300px;
-	min-height: 600px;
-	position: relative;
+	min-height: 500px;
 	margin: 0px auto;
 	margin-top: 80px;
 }
@@ -54,9 +53,10 @@
 	position: relative;
 	text-align: center;
 	height: 100px;
-	background-color: /* #F6F6F6 */;
+	background-color: #F6F6F6;
 	margin-top: 100px;
 }
+
 
 /* 내가 추가  */
 #contents{

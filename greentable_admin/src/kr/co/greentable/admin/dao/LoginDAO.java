@@ -33,7 +33,10 @@ public class LoginDAO {
 	
 	
 	public static void main(String[] args) {
-		
+		LoginVO lVO=new LoginVO();
+		lVO.setId("admin");
+		lVO.setPassword("1234");
+		System.out.println(login_DAO.getInstance().selectLogin(lVO));
 
 		
 	}

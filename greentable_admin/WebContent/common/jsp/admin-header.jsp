@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" info="관리자 헤더 메뉴"%>
 <div class="headerTop">
-    <a href="../login_frm.do">로그아웃</a>
+    <a href="logout.do">로그아웃</a>
 </div>
 
 <div id="logo">
-	<a href="admin_main.jsp"><img src="http://localhost/greentable_admin/common/images/logo3.png"/></a>
+	<a href="product_mng_frm.do"><img src="common/images/logo3.png"/></a>
 </div>
 
 <ul id="mainMenu">

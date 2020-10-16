@@ -6,34 +6,57 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import kr.co.greentable.admin.domain.OptionDomain;
 import kr.co.greentable.admin.service.OrderService;
+import kr.co.greentable.admin.vo.OrderRangeVO;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.IOException;
+
 
 @Controller
 public class OrderController {
 
 	@RequestMapping(value="/order.do", method=GET)
 	public String orderMain() {
-	
+
 		return "order/order_main";
+		
 	}
 	
-	@RequestMapping(value="/order_pocess.do", method=GET)
-	public String orderList(String orderDate, Model model) {
+	@RequestMapping(value="/order_process.do", method=GET)
+	public String orderList(String paramPage, String order_date, Model model) {
 		
 		OrderService ors=new OrderService();
 		
+		//전체 order 수
+				int totalCount=ors.serachOrderCount(order_date);
+				//한 화면에 보여줄 order 수
+				int pageScale=ors.pageScale();
+				//총 페이지 수
+				int totalPage=ors.totalPage(totalCount, pageScale);
+				//
+				if(paramPage ==null) {
+					paramPage="1";
+				}
+				//현재 페이지
+				int currentPage=Integer.parseInt(paramPage);
+				
+				//페이지 별 시작번호
+				int startNum=ors.startNum(currentPage, pageScale);
+				//페이지별 끝 번호
+				int endNum=ors.endNum(startNum, pageScale);
 		
-		model.addAttribute("list_order",ors.searchOrderList(orderDate));
-		model.addAttribute("list_option",ors.searchOptionList(orderDate));
-		model.addAttribute("orderDate",orderDate );
+				//시작번호와 끝 번호 사이의 글 조회
+				OrderRangeVO orVO=new OrderRangeVO(order_date, startNum,endNum);
+				
+		model.addAttribute("total_page",totalPage);
+		model.addAttribute("list_order",ors.searchOrderList(orVO));
+		model.addAttribute("list_option",ors.searchOptionList(orVO));
+		model.addAttribute("orderDate",order_date );
 		
 		return "order/order_process";
+		
 	}
 	
 	@RequestMapping(value="/order_detail.do", method=GET)

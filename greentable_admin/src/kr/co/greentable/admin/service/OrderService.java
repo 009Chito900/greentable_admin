@@ -6,44 +6,60 @@ import kr.co.greentable.admin.dao.OrderDAO;
 import kr.co.greentable.admin.domain.OptionDomain;
 import kr.co.greentable.admin.domain.OrderDomain;
 import kr.co.greentable.admin.domain.ReceiverDomain;
+import kr.co.greentable.admin.vo.OrderRangeVO;
 
 public class OrderService {
-	
-
 
 	OrderDAO order_DAO=OrderDAO.getInstance();
-
-	public List<OrderDomain> searchOrderList(String order_date){
-		List<OrderDomain>  orderList=null;
+	
+//전체 order 수
+	public int serachOrderCount(String date) {
+		int cnt=0;
+		cnt=order_DAO.selectOrderCnt(date);
+		return cnt;
+	}
+	
+	//한 화면 보여줄 수
+		public int pageScale() {
+			int pageScale=15;
+			return pageScale;
+		}
+		//총 페이지 수
+		public int totalPage(int totalCount,int pageScale) {
+			int totalPage=(int)Math.ceil((double)totalCount/pageScale);
+			
+			return totalPage;
+		}
 		
-		orderList = order_DAO.selectOrderList(order_date);
+		//시작 번호
+		public int startNum(int currentPage,int pageScale) {
+			int startNum=currentPage*pageScale-pageScale+1;
+			return startNum;
+		}
+		//끝 번호
+		public int endNum(int startNum,int pageScale) {
+			int endNum=startNum+pageScale-1;
+			return endNum;
+		}
 		
 	
-		  for(int i=0; i <orderList.size()-1 ; i++) {
-			
+	
+	
+
+	public List<OrderDomain> searchOrderList(OrderRangeVO orVO){
+		List<OrderDomain>  orderList=null;
 		
-			  if(orderList.get(i).getOrder_num().equals( orderList.get(i+1).getOrder_num()) ) {
-			 
-				  String order_num=orderList.get(i+1).getOrder_num(); 
-				  order_num=" "; 
-			
-		  	
-			  } //end if
-		  }//end for
-		 
-			/*
-			 * for(int i=0; i <orderList.size()-1 ; i++) {
-			 * System.out.println(i+1+"번째 :"+orderList.get(i).getOrder_num()); }
-			 */
+		orderList = order_DAO.selectOrderList(orVO);
 		
+	
 		return orderList;
 	}//searchOrderList
 	
 	
 	
-	public List<OptionDomain> searchOptionList(String order_date){
+	public List<OptionDomain> searchOptionList(OrderRangeVO orVO){
 		List<OptionDomain> optionList=null;
-		optionList = order_DAO.selectOptionList(order_date);
+		optionList = order_DAO.selectOptionList(orVO);
 		
 		return optionList;
 	}//searchOrderList

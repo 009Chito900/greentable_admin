@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="http://localhost/greentable_admin/common/css/admin-header.css">
+<link rel="stylesheet" type="text/css" href="common/css/admin-header.css">
 
 <style>
 #wrap {
@@ -55,17 +55,24 @@
 }
 
 /* 내가 추가  */
-#contents {
+#contents{
 	margin: 0px auto;
 	padding-top:30px;
+
 }
 
-#tableWrap {
+#datePickerWrap{
+	width:1300px;
+	padding-top:30px;
+	padding-left:0px;
+	padding-bottom:30px;
+	
+	}
+	#tableWrap{
 	width:1300px;
 	margin:0px, auto;
-}
-/* 내가 추가  */
-
+	
+	}
 </style>
 
 <!-- DatePicker -->
@@ -77,11 +84,17 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-	
-	
+
+	<c:if test="${sessionScope.user_id  eq null}">
+			alert("로그인 후 이용 가능합니다.");
+			location.replace('login_frm.do');
+			
+	</c:if>
+	 
+
 	
     $.datepicker.setDefaults($.datepicker.regional['ko']); 
-    $( "#orderDate" ).datepicker({
+    $( "#order_date" ).datepicker({
          changeMonth: true, 
          changeYear: true,
          nextText: '다음 달',
@@ -107,6 +120,7 @@ $(document).ready(function () {
   	
     });//click
  
+    
     <c:if test="${move_page eq 'del'}">
 		<c:if test="${delFlag}">
 	alert("글이 삭제되었습니다.");
@@ -123,36 +137,39 @@ $(document).ready(function () {
 
 </head>
 <body>
-	<div id="wrapper">
+<div id="wrapper">
 		<div id="header">
 			<div id="naviBar">
 				<c:import url="/common/jsp/admin-header.jsp" />
 			</div>
 		</div>
-		<!-- header -->
-
 		<div id="container">
+			 
+<form id="frm" action="order.do" method="get">  
+<div id="datePickerWrap">
+	
+	<input type="text" id="order_date" name="order_date" placeholder="날짜 선택" value="${ param.order_date }" style="width:120px"/>
+	
+	<button type="button" id="btn" class="btn btn-light">  판매상품 보기</button>
+	</div>
 
-			<form id="frm" action="order.do" method="get">
-				<div id="datePickerWrap">
-					<input type="text" id="orderDate" name="orderDate" value="${ param.orderDate }" style="width: 120px" />
-					<input type="button" id="btn" class="btn btn-outline-success" value="판매상품 보기"/>
-				</div>
-				<c:if test="${param.orderDate != null}">
-					<c:import url="/order_pocess.do" />
-				</c:if>
-			</form>
-		</div>
-		<!-- container -->
+
+	<c:if test="${param.order_date != null}">
+	<c:import url="/order_process.do"/>
+	</c:if>
+	
+</form>
+</div>
+</div>		
 		
+
 		<div id="footer">
 			<p>
 				With supporting text below as a natural lead-in to additional
 				content.<br /> &copy; CopyRight. All Right Reserved. Class A
 			</p>
 		</div>
-		<!-- footer -->
-			
-	</div>
+		
+
 </body>
 </html>
